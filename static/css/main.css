@@ -1,0 +1,12 @@
+
+body {
+    background-image: url('/static/img/Syspe.png');
+    background-image: no-repeat;
+    background-image: fixed;
+    background-image: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  
+}
