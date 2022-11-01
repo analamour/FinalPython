@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.config ["MYSQL_HOST"] = 'localhost'
 app.config ["MYSQL_USSER"] = 'root'
 app.config ["MYSQL_PASSWORD"] = ''
-app.config ["MYSQL_DB"] = 'flaskcontacts'
+app.config ["MYSQL_DB"] = 'syspe'
 mysql = MySQL(app)
 
 
