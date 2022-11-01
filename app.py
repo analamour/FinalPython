@@ -20,6 +20,14 @@ def Index():
     cur.execute('SELECT * FROM contacts')
     data = cur.fetchall()
     return render_template('index.html', contacts = data)
+    
+
+
+
+@app.route("/")
+def altaCLiente():
+    return render_template('altaCliente.html')
+
 
 @app.route("/add_contact", methods=['POST'])
 def add_contact():
@@ -33,9 +41,10 @@ def add_contact():
         flash("Contacto agregado")
         return redirect(url_for('Index'))
         
+
 @app.route('/altaCliente')
 def alta_cliente():
-    return 'alta cliente'
+    return render_template('altaCliente.html')
 
 @app.route("/edit/<id>")
 def get_contact(id):

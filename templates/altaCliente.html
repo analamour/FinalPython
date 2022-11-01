@@ -36,7 +36,7 @@
     
     </div>
     <div class="col-md-7">
-        <table class="table table-striped table-bordered bg-white table-sm list-group-item-info">
+        <table class="table table-striped table-bordered bg-white table-sm">
             <thead>
                 <tr>
                     <td>Nombre</td>
@@ -53,8 +53,8 @@
                     <td>{{ contact.2 }}</td>
                     <td>{{ contact.3 }}</td>
                     <td>
-                        <a href="/edit/{{contact.0}}" class="btn btn-outline-success"> Editar</a>
-                        <a href="/delete/{{contact.0}}" class="btn btn-outline-danger"> Eliminar</a>
+                        <a href="/edit/{{contact.0}}" class="btn btn-danger"> Editar</a>
+                        <a href="/delete/{{contact.0}}" class="btn btn-danger btn-delete"> Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %}
