@@ -23,8 +23,7 @@ def Index():
     
 
 
-
-@app.route("/")
+@app.route("/altaCliente")
 def altaCLiente():
     return render_template('altaCliente.html')
 
