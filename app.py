@@ -11,7 +11,7 @@ app.config ["MYSQL_DB"] = 'syspe'
 mysql = MySQL(app)
 
 
-#Inicio Sesión
+#configuracion
 app.secret_key = 'mysecretkey'
 
 @app.route("/")
@@ -19,13 +19,23 @@ def Index():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM clientes')
     data = cur.fetchall()
-    return render_template('index.html', clientes = data)
+    return render_template('index.html', contacts = data)
     
 
 @app.route("/altaCliente")
 def altaCLiente():
-    return render_template('altaCliente.html')
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM clientes')
+    data = cur.fetchall()
+    return render_template('altaCliente.html', clientes = data)
 
+
+@app.route("/listadoCliente")
+def listadoCliente():
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM clientes')
+    data = cur.fetchall()
+    return render_template('listadoCliente.html', clientes = data)
 
 @app.route("/add_cliente", methods=['POST'])
 def add_cliente():
@@ -36,11 +46,10 @@ def add_cliente():
         cuit = request.form['cuit']
         direccion = request.form['direccion']
         mail = request.form['mail']
-
         cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO clientes (razonsocial, nombrefantsia, telefono, cuit, direccion, mail) VALUES (%s, %s, %s)',(razonsocial, nombrefantsia, telefono, cuit, direccion, mail))
+        cur.execute('INSERT INTO clientes (razonsocial, nombrefantsia, telefono, cuit, direccion, mail) VALUES (%s, %s, %s, %s, %s,%s )',(razonsocial, nombrefantsia, telefono, cuit, direccion, mail))
         mysql.connection.commit ()
-        flash("Contacto agregado")
+        flash("Cliente agregado")
         return redirect(url_for('altaCLiente'))
         
 
