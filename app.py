@@ -17,28 +17,31 @@ app.secret_key = 'mysecretkey'
 @app.route("/")
 def Index():
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM contacts')
+    cur.execute('SELECT * FROM clientes')
     data = cur.fetchall()
-    return render_template('index.html', contacts = data)
+    return render_template('index.html', clientes = data)
     
-
 
 @app.route("/altaCliente")
 def altaCLiente():
     return render_template('altaCliente.html')
 
 
-@app.route("/add_contact", methods=['POST'])
-def add_contact():
+@app.route("/add_cliente", methods=['POST'])
+def add_cliente():
     if request.method == 'POST':
-        fullname = request.form['fullname']
-        phone = request.form['phone']
-        email = request.form['email']
+        razonsocial = request.form['razonsocial']
+        nombrefantsia = request.form['nombrefantsia']
+        telefono = request.form['telefono']
+        cuit = request.form['cuit']
+        direccion = request.form['direccion']
+        mail = request.form['mail']
+
         cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO contacts (fullname, phone,email) VALUES (%s, %s, %s)',(fullname, phone, email))
+        cur.execute('INSERT INTO clientes (razonsocial, nombrefantsia, telefono, cuit, direccion, mail) VALUES (%s, %s, %s)',(razonsocial, nombrefantsia, telefono, cuit, direccion, mail))
         mysql.connection.commit ()
         flash("Contacto agregado")
-        return redirect(url_for('Index'))
+        return redirect(url_for('altaCLiente'))
         
 
 @app.route('/altaCliente')
@@ -46,39 +49,45 @@ def alta_cliente():
     return render_template('altaCliente.html')
 
 @app.route("/edit/<id>")
-def get_contact(id):
+def get_cliente(id):
     cur = mysql.connection.cursor()
-    cur.execute ('SELECT * FROM contacts WHERE id = %s', (id))
+    cur.execute ('SELECT * FROM clientes WHERE id = %s', (id))
     data = cur.fetchall()
     print(data[0])
-    return render_template('edit-contact.html', contact = data[0])
+    return render_template('edit-contact.html', clientes = data[0])
 
 
 @app.route('/update/<id>', methods = ['POST'])
-def update_contact(id):
+def update_clientes(id):
     if request.method == 'POST':
-        fullname = request.form['fullname']
-        phone = request.form['phone']
-        email = request.form['email']
+        razonsocial = request.form['razonsocial']
+        nombrefantsia = request.form['nombrefantsia']
+        telefono = request.form['telefono']
+        cuit = request.form['cuit']
+        direccion = request.form['direccion']
+        mail = request.form['mail']
         cur = mysql.connection.cursor()
         cur.execute("""
-            UPDATE contacts
-            SET fullname = %s,
-                email =%s,
-                phone =%s
+            UPDATE clientes
+            SET razonsocial = %s,
+                nombrefantsia =%s,
+                telefono =%s,
+                cuit =%s,
+                direccion =%s,
+                mail =%s
             WHERE id =%s
 
-        """,  (fullname, phone, email,id))   
+        """,  (razonsocial, nombrefantsia, telefono, cuit, direccion, mail,id))   
         mysql.connection.commit()
-        flash('contacto modificado')
+        flash('Cliente modificado')
         return redirect(url_for('Index'))
 
 @app.route("/delete/<string:id>")
-def delete_contact(id):
+def delete_cliente(id):
     cur = mysql.connection.cursor()
-    cur.execute('DELETE FROM contacts WHERE id =  {0}'.format(id))
+    cur.execute('DELETE FROM clientes WHERE id =  {0}'.format(id))
     mysql.connection.commit()
-    flash('Contacto eliminado')
+    flash('Cliente eliminado')
     return redirect(url_for('Index'))
 
 

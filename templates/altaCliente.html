@@ -15,7 +15,7 @@
         {% endwith %}
 
        <div class="card card-body">
-        <form action ="/add_contact" method="POST">
+        <form action ="/add_cliente" method="POST">
             <div class="form-group">
              <input type="text" name="razonsocial" placeholder="Razon Social" class="form-control">
             </div>
@@ -56,14 +56,17 @@
             </thead>
         
             <tbody>
-                {% for contact in contacts %}
+                {% for cliente in clientes %}
                 <tr>
-                    <td>{{ contact.1 }}</td>
-                    <td>{{ contact.2 }}</td>
-                    <td>{{ contact.3 }}</td>
+                    <td>{{ cliente.1 }}</td>
+                    <td>{{ cliente.2 }}</td>
+                    <td>{{ cliente.3 }}</td>
+                    <td>{{ cliente.4 }}</td>
+                    <td>{{ cliente.5 }}</td>
+                    <td>{{ cliente.6 }}</td>
                     <td>
-                        <a href="/edit/{{contact.0}}" class="btn btn-danger"> Editar</a>
-                        <a href="/delete/{{contact.0}}" class="btn btn-danger btn-delete"> Eliminar</a>
+                        <a href="/edit/{{cliente.0}}" class="btn btn-danger"> Editar</a>
+                        <a href="/delete/{{cliente.0}}" class="btn btn-danger btn-delete"> Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %}
