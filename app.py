@@ -24,10 +24,7 @@ def Index():
 
 @app.route("/altaCliente")
 def altaCLiente():
-    cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM clientes')
-    data = cur.fetchall()
-    return render_template('altaCliente.html', clientes = data)
+    return render_template('altaCliente.html')
 
 
 @app.route("/listadoCliente")
@@ -63,7 +60,7 @@ def get_cliente(id):
     cur.execute ('SELECT * FROM clientes WHERE id = %s', (id))
     data = cur.fetchall()
     print(data[0])
-    return render_template('edit-contact.html', clientes = data[0])
+    return render_template('edit-contact.html', cliente = data[0])
 
 
 @app.route('/update/<id>', methods = ['POST'])
