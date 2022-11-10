@@ -97,5 +97,10 @@ def delete_cliente(id):
     return redirect(url_for('Index'))
 
 
+@app.route("/altaProducto")
+def altaProducto():
+    return render_template('altaProducto.html')
+
+
 if __name__ == '__main__':
     app.run(port = 3000, debug = True)
