@@ -6,7 +6,7 @@ app = Flask(__name__)
 # conección Mysql 
 app.config ["MYSQL_HOST"] = 'localhost'
 app.config ["MYSQL_USSER"] = 'root'
-app.config ["MYSQL_PASSWORD"] = ''
+app.config ["MYSQL_PASSWORD"] = 'Amiri$14'
 app.config ["MYSQL_DB"] = 'syspe'
 mysql = MySQL(app)
 
@@ -14,6 +14,8 @@ mysql = MySQL(app)
 #configuracion
 app.secret_key = 'mysecretkey'
 
+
+#MODULO CLIENTES
 @app.route("/")
 def Index():
     cur = mysql.connection.cursor()
@@ -96,10 +98,69 @@ def delete_cliente(id):
     flash('Cliente eliminado')
     return redirect(url_for('Index'))
 
-
+#MODULO PRODUCTOS
 @app.route("/altaProducto")
 def altaProducto():
     return render_template('altaProducto.html')
+
+@app.route("/add_producto", methods=['POST'])
+def add_producto():
+    if request.method == 'POST':
+        producto = request.form['producto']
+        detalles = request.form['detalles']
+        cantidad = request.form['cantidad']
+        rubro = request.form['rubro']
+        cur = mysql.connection.cursor()
+        cur.execute('INSERT INTO productos (producto, comentario, stockVendido, stockDisponible, rubro) VALUES (%s, %s, %s, %s, %s,%s )',(producto, detalles, 0, cantidad, rubro))
+        mysql.connection.commit ()
+        flash("Producto agregado")
+        return redirect(url_for('altaProducto'))
+
+@app.route("/inventario")
+def inventario():
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM productos')
+    data = cur.fetchall()
+    return render_template('inventario.html', productos = data)
+
+@app.route("/delete_producto/<string:id>")
+def delete_producto(id):
+    cur = mysql.connection.cursor()
+    cur.execute('DELETE FROM productos WHERE id =  {0}'.format(id))
+    mysql.connection.commit()
+    flash('Producto eliminado')
+    return redirect(url_for('Index'))
+
+@app.route("/edit_producto/<id>")
+def get_producto(id):
+    cur = mysql.connection.cursor()
+    cur.execute ('SELECT * FROM productos WHERE id = %s', (id))
+    data = cur.fetchall()
+    print(data[0])
+    return render_template('edit-product.html', producto = data[0])
+
+@app.route('/update_producto/<id>', methods = ['POST'])
+def update_producto(id):
+    if request.method == 'POST':
+        producto = request.form['producto']
+        detalle = request.form['detalle']
+        disponible = request.form['stockDisponible']
+        vendido = request.form['stockVendido']
+        rubro = request.form['rubro']
+        cur = mysql.connection.cursor()
+        cur.execute("""
+            UPDATE productos
+            SET producto = %s,
+                comentario =%s,
+                stockVendido =%s,
+                stockDisponible =%s,
+                rubro =%s
+            WHERE id =%s;
+
+        """,  (producto, detalle, vendido, disponible, rubro, id))   
+        mysql.connection.commit()
+        flash('Producto modificado')
+        return redirect(url_for('Index'))
 
 
 if __name__ == '__main__':
