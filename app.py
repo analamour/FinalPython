@@ -96,7 +96,7 @@ def delete_cliente(id):
     cur.execute('DELETE FROM clientes WHERE id =  {0}'.format(id))
     mysql.connection.commit()
     flash('Cliente eliminado')
-    return redirect(url_for('listadoCiente'))
+    return redirect(url_for('listadoCliente'))
 
 #MODULO PRODUCTOS
 @app.route("/altaProducto")
