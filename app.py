@@ -88,7 +88,7 @@ def update_clientes(id):
         """,  (razonsocial, nombrefantsia, telefono, cuit, direccion, mail,id))   
         mysql.connection.commit()
         flash('Cliente modificado')
-        return redirect(url_for('Index'))
+        return redirect(url_for('listadoCliente'))
 
 @app.route("/delete/<string:id>")
 def delete_cliente(id):
@@ -96,7 +96,7 @@ def delete_cliente(id):
     cur.execute('DELETE FROM clientes WHERE id =  {0}'.format(id))
     mysql.connection.commit()
     flash('Cliente eliminado')
-    return redirect(url_for('Index'))
+    return redirect(url_for('listadoCiente'))
 
 #MODULO PRODUCTOS
 @app.route("/altaProducto")
@@ -108,10 +108,11 @@ def add_producto():
     if request.method == 'POST':
         producto = request.form['producto']
         detalles = request.form['detalles']
+        precio = request.form['precio']
         cantidad = request.form['cantidad']
         rubro = request.form['rubro']
         cur = mysql.connection.cursor()
-        cur.execute('INSERT INTO productos (producto, comentario, stockVendido, stockDisponible, rubro) VALUES (%s, %s, %s, %s, %s,%s )',(producto, detalles, 0, cantidad, rubro))
+        cur.execute('INSERT INTO productos (producto, comentario, precio, stockVendido, stockDisponible, rubro) VALUES (%s, %s, %s, %s, %s,%s )',(producto, detalles, precio, 0, cantidad, rubro))
         mysql.connection.commit ()
         flash("Producto agregado")
         return redirect(url_for('altaProducto'))
@@ -129,7 +130,7 @@ def delete_producto(id):
     cur.execute('DELETE FROM productos WHERE id =  {0}'.format(id))
     mysql.connection.commit()
     flash('Producto eliminado')
-    return redirect(url_for('Index'))
+    return redirect(url_for('inventario'))
 
 @app.route("/edit_producto/<id>")
 def get_producto(id):
@@ -144,6 +145,7 @@ def update_producto(id):
     if request.method == 'POST':
         producto = request.form['producto']
         detalle = request.form['detalle']
+        precio = request.form['precio']
         disponible = request.form['stockDisponible']
         vendido = request.form['stockVendido']
         rubro = request.form['rubro']
@@ -152,15 +154,16 @@ def update_producto(id):
             UPDATE productos
             SET producto = %s,
                 comentario =%s,
+                precio =%s,
                 stockVendido =%s,
                 stockDisponible =%s,
                 rubro =%s
             WHERE id =%s;
 
-        """,  (producto, detalle, vendido, disponible, rubro, id))   
+        """,  (producto, detalle, precio, vendido, disponible, rubro, id))   
         mysql.connection.commit()
         flash('Producto modificado')
-        return redirect(url_for('Index'))
+        return redirect(url_for('inventario'))
 
 
 if __name__ == '__main__':
