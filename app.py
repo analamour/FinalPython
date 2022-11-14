@@ -165,6 +165,66 @@ def update_producto(id):
         flash('Producto modificado')
         return redirect(url_for('inventario'))
 
+@app.route("/cargarventa")
+def cargarventa():
+    cur = mysql.connection.cursor()
+    cur.execute ('SELECT id, producto FROM productos where stockDisponible > 0')
+    data = cur.fetchall()
+    #print(data[0])
+    return render_template('cargarventa.html', productos = data)
+
+@app.route('/restar_stock_vendido', methods = ['POST'])
+def restar_stock_vendido():
+    if request.method == 'POST':
+        codigoProducto = request.form['codigoProducto']
+        #print("EL CODIGO PRODUCTO ES ",codigoProducto)
+        cantVentaForm = request.form['cantidadVendido']
+        cur = mysql.connection.cursor()
+        cur.execute(f"select stockDisponible from productos where id={codigoProducto}")
+        cantidadDisponibleActual = cur.fetchall()
+        disponible = int(cantidadDisponibleActual[0][0]) - int(cantVentaForm)
+        cur.execute(f"select stockVendido from productos where id={codigoProducto}")
+        cantidadVendidaActual = cur.fetchall()
+        vendido = int(cantidadVendidaActual[0][0]) + int(cantVentaForm)
+        disponible = str(disponible)
+        vendido = str(vendido)
+        cur.execute("""
+            UPDATE productos
+            SET stockDisponible =%s,
+            stockVendido = %s
+            WHERE id =%s;
+        """,  (disponible, vendido, codigoProducto))   
+        mysql.connection.commit()
+        flash(f'Stock actualizado')
+        return redirect(url_for('inventario'))
+
+@app.route("/cargarstock")
+def cargarstock():
+    cur = mysql.connection.cursor()
+    cur.execute ('SELECT id, producto FROM productos')
+    data = cur.fetchall()
+    return render_template('cargarstock.html', productos = data)
+
+@app.route('/agregar_stock_ingresado', methods = ['POST'])
+def agregar_stock_ingresado():
+    if request.method == 'POST':
+        codigoProducto = request.form['codigoProducto']
+        #print("EL CODIGO PRODUCTO ES ",codigoProducto)
+        cantIngresoForm = request.form['cantidadIngreso']
+        cur = mysql.connection.cursor()
+        cur.execute(f"select stockDisponible from productos where id={codigoProducto}")
+        cantidadDisponibleActual = cur.fetchall()
+        disponible = int(cantidadDisponibleActual[0][0]) + int(cantIngresoForm)
+        disponible = str(disponible)
+        cur.execute("""
+            UPDATE productos
+            SET stockDisponible =%s
+            WHERE id =%s;
+        """,  (disponible, codigoProducto))   
+        mysql.connection.commit()
+        flash(f'Stock actualizado')
+        return redirect(url_for('inventario'))
+
 
 if __name__ == '__main__':
     app.run(port = 3000, debug = True)
