@@ -181,21 +181,26 @@ def restar_stock_vendido():
         cantVentaForm = request.form['cantidadVendido']
         cur = mysql.connection.cursor()
         cur.execute(f"select stockDisponible from productos where id={codigoProducto}")
-        cantidadDisponibleActual = cur.fetchall()
-        disponible = int(cantidadDisponibleActual[0][0]) - int(cantVentaForm)
-        cur.execute(f"select stockVendido from productos where id={codigoProducto}")
-        cantidadVendidaActual = cur.fetchall()
-        vendido = int(cantidadVendidaActual[0][0]) + int(cantVentaForm)
-        disponible = str(disponible)
-        vendido = str(vendido)
-        cur.execute("""
-            UPDATE productos
-            SET stockDisponible =%s,
-            stockVendido = %s
-            WHERE id =%s;
-        """,  (disponible, vendido, codigoProducto))   
-        mysql.connection.commit()
-        flash(f'Stock actualizado')
+        cantidadDisponibleActualTupla = cur.fetchall()
+        cantidadDisponibleActual = int(cantidadDisponibleActualTupla[0][0])
+        cantidadVendidaForm = int(cantVentaForm)
+        if cantidadVendidaForm > cantidadDisponibleActual:
+            flash(f'La cantidad ingresada supera al stock disponible')
+        else:
+            disponible = cantidadDisponibleActual - cantidadVendidaForm
+            cur.execute(f"select stockVendido from productos where id={codigoProducto}")
+            cantidadVendidaActual = cur.fetchall()
+            vendido = int(cantidadVendidaActual[0][0]) + int(cantVentaForm)
+            disponible = str(disponible)
+            vendido = str(vendido)
+            cur.execute("""
+                UPDATE productos
+                SET stockDisponible =%s,
+                stockVendido = %s
+                WHERE id =%s;
+            """,  (disponible, vendido, codigoProducto))   
+            mysql.connection.commit()
+            flash('Stock actualizado')
         return redirect(url_for('inventario'))
 
 @app.route("/cargarstock")
@@ -224,6 +229,7 @@ def agregar_stock_ingresado():
         mysql.connection.commit()
         flash(f'Stock actualizado')
         return redirect(url_for('inventario'))
+
 
 
 if __name__ == '__main__':
